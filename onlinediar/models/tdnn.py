@@ -17,10 +17,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import wespeaker.models.pooling_layers as pooling_layers
+import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
 
 
 class TdnnLayer(nn.Module):
+
     def __init__(self, in_dim, out_dim, context_size, dilation=1, padding=0):
         """Define the TDNN layer, essentially 1-D convolution
 
@@ -37,13 +38,11 @@ class TdnnLayer(nn.Module):
         self.context_size = context_size
         self.dilation = dilation
         self.padding = padding
-        self.conv_1d = nn.Conv1d(
-            self.in_dim,
-            self.out_dim,
-            self.context_size,
-            dilation=self.dilation,
-            padding=self.padding,
-        )
+        self.conv_1d = nn.Conv1d(self.in_dim,
+                                 self.out_dim,
+                                 self.context_size,
+                                 dilation=self.dilation,
+                                 padding=self.padding)
 
         # Set Affine=false to be compatible with the original kaldi version
         self.bn = nn.BatchNorm1d(out_dim, affine=False)
@@ -56,14 +55,13 @@ class TdnnLayer(nn.Module):
 
 
 class XVEC(nn.Module):
-    def __init__(
-        self,
-        feat_dim=40,
-        hid_dim=512,
-        stats_dim=1500,
-        embed_dim=512,
-        pooling_func="TSTP",
-    ):
+
+    def __init__(self,
+                 feat_dim=40,
+                 hid_dim=512,
+                 stats_dim=1500,
+                 embed_dim=512,
+                 pooling_func='TSTP'):
         """
         Implementation of Kaldi style xvec, as described in
         X-VECTORS: ROBUST DNN EMBEDDINGS FOR SPEAKER RECOGNITION
@@ -77,7 +75,10 @@ class XVEC(nn.Module):
         self.frame_2 = TdnnLayer(hid_dim, hid_dim, context_size=3, dilation=2)
         self.frame_3 = TdnnLayer(hid_dim, hid_dim, context_size=3, dilation=3)
         self.frame_4 = TdnnLayer(hid_dim, hid_dim, context_size=1, dilation=1)
-        self.frame_5 = TdnnLayer(hid_dim, stats_dim, context_size=1, dilation=1)
+        self.frame_5 = TdnnLayer(hid_dim,
+                                 stats_dim,
+                                 context_size=1,
+                                 dilation=1)
 
         self.pool = getattr(pooling_layers, pooling_func)(in_dim=stats_dim)
         self.pool_out_dim = self.pool.get_out_dim()
@@ -114,9 +115,9 @@ class XVEC(nn.Module):
         return embed_a, embed_b
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     x = torch.rand(1, 200, 80)
-    model = XVEC(feat_dim=80, embed_dim=512, pooling_func="TSTP")
+    model = XVEC(feat_dim=80, embed_dim=512, pooling_func='TSTP')
     model.eval()
     y = model(x)
     print(y[-1].size())

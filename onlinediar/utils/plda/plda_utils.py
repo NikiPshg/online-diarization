@@ -36,7 +36,7 @@ def read_label_file(label_file):
     :return: dict {wav_name: spk_id}
     """
     labels_dict = {}
-    with open(label_file, "r") as fin:
+    with open(label_file, 'r') as fin:
         for line in fin:
             tokens = line.strip().split()
             labels_dict[tokens[0]] = tokens[1]
@@ -50,11 +50,10 @@ def norm_embeddings(embeddings, kaldi_style=True):
     :param kaldi_style: if true, the norm should be embedding dimension
     :return:
     """
-    scale = math.sqrt(embeddings.shape[-1]) if kaldi_style else 1.0
+    scale = math.sqrt(embeddings.shape[-1]) if kaldi_style else 1.
     if len(embeddings.shape) == 2:
-        return (
-            scale * embeddings.transpose() / np.linalg.norm(embeddings, axis=1)
-        ).transpose()
+        return (scale * embeddings.transpose() /
+                np.linalg.norm(embeddings, axis=1)).transpose()
     elif len(embeddings.shape) == 1:
         return scale * embeddings / np.linalg.norm(embeddings)
 
@@ -73,11 +72,8 @@ def get_data_for_plda(scp_file, utt2spk_file):
             else:
                 model_dict[label] = [vec]
         else:
-            print(
-                "WARNING: {} not in utt2spk ({}), skipping it.".format(
-                    key, utt2spk_file
-                )
-            )
+            print("WARNING: {} not in utt2spk ({}), skipping it.".format(
+                key, utt2spk_file))
 
     return np.vstack(samples), model_dict
 

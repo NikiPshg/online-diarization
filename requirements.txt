@@ -18,4 +18,6 @@ silero-vad
 pre-commit
 hdbscan
 umap-learn
-git+https://github.com/wenet-e2e/wespeaker.git
+pyannote.core
+joblib
+pydantic

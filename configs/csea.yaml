@@ -1,0 +1,34 @@
+# Configuration for CSEA backend without PCA
+# Use this if you don't have a PCA model
+
+backend: "csea"
+
+# Model paths
+emb_model_path: "models/voxblink2_samresnet34_ft.onnx"  # Speaker embedding model
+
+# CSEA parameters
+csea_threshold: 0.75  # Cosine similarity threshold (0.0 to 1.0, higher = stricter)
+max_embeddings_per_speaker: 40  # Max embeddings to keep per speaker
+
+# Audio processing
+resample_rate: 16000  # Sample rate in Hz
+duration: 2.015  # Window duration for embeddings (seconds)
+step_size: 1.0  # Step size for overlapping windows (seconds)
+
+# VAD (Voice Activity Detection)
+vad_threshold: 0.5  # VAD sensitivity (0.0 to 1.0)
+min_silence_dur_ms: 1000  # Minimum silence duration (milliseconds)
+min_duration_for_change: 1000  # Minimum duration to consider speaker change (milliseconds)
+
+# Processing
+device: "cpu"  # "cpu" or "cuda"
+use_pca: false  # Disable PCA
+freeze: false  # If true, only use registered speakers
+
+# Prepared speakers (optional)
+# Uncomment and add your known speakers:
+# prepared_speakers:
+#   - name: "John"
+#     audio_path: "speakers/john.wav"
+#   - name: "Alice"
+#     audio_path: "speakers/alice.wav"

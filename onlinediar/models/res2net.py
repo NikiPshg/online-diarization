@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
+'''
 This implementation is adapted from github repo:
 https://github.com/alibaba-damo-academy/3D-Speaker
 
@@ -21,15 +21,14 @@ Some modifications:
 2. Refine BasicBlockRes2Net to meet the torch.jit.script
    export requirements
 
-"""
-
-import math
+'''
 
 import torch
+import math
 import torch.nn as nn
 import torch.nn.functional as F
-import wespeaker.models.pooling_layers as pooling_layers
-from wespeaker.models.eres2net import ReLU, conv1x1, conv3x3
+import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
+from streaming_nemo.lib.wespeaker.models.eres2net import ReLU, conv1x1, conv3x3
 
 
 class BasicBlockRes2Net(nn.Module):
@@ -55,15 +54,11 @@ class BasicBlockRes2Net(nn.Module):
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(
-                    in_planes,
-                    self.expansion * planes,
-                    kernel_size=1,
-                    stride=stride,
-                    bias=False,
-                ),
-                nn.BatchNorm2d(self.expansion * planes),
-            )
+                nn.Conv2d(in_planes,
+                          self.expansion * planes,
+                          kernel_size=1,
+                          stride=stride,
+                          bias=False), nn.BatchNorm2d(self.expansion * planes))
         self.stride = stride
         self.width = width
         self.scale = scale
@@ -99,16 +94,15 @@ class BasicBlockRes2Net(nn.Module):
 
 
 class Res2Net(nn.Module):
-    def __init__(
-        self,
-        m_channels,
-        num_blocks,
-        block=BasicBlockRes2Net,
-        feat_dim=80,
-        embed_dim=192,
-        pooling_func="TSTP",
-        two_emb_layer=False,
-    ):
+
+    def __init__(self,
+                 m_channels,
+                 num_blocks,
+                 block=BasicBlockRes2Net,
+                 feat_dim=80,
+                 embed_dim=192,
+                 pooling_func='TSTP',
+                 two_emb_layer=False):
         super(Res2Net, self).__init__()
         self.in_planes = m_channels
         self.feat_dim = feat_dim
@@ -116,18 +110,33 @@ class Res2Net(nn.Module):
         self.stats_dim = int(feat_dim / 8) * m_channels * 8
         self.two_emb_layer = two_emb_layer
 
-        self.conv1 = nn.Conv2d(
-            1, m_channels, kernel_size=3, stride=1, padding=1, bias=False
-        )
+        self.conv1 = nn.Conv2d(1,
+                               m_channels,
+                               kernel_size=3,
+                               stride=1,
+                               padding=1,
+                               bias=False)
         self.bn1 = nn.BatchNorm2d(m_channels)
-        self.layer1 = self._make_layer(block, m_channels, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, m_channels * 2, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, m_channels * 4, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, m_channels * 8, num_blocks[3], stride=2)
+        self.layer1 = self._make_layer(block,
+                                       m_channels,
+                                       num_blocks[0],
+                                       stride=1)
+        self.layer2 = self._make_layer(block,
+                                       m_channels * 2,
+                                       num_blocks[1],
+                                       stride=2)
+        self.layer3 = self._make_layer(block,
+                                       m_channels * 4,
+                                       num_blocks[2],
+                                       stride=2)
+        self.layer4 = self._make_layer(block,
+                                       m_channels * 8,
+                                       num_blocks[3],
+                                       stride=2)
 
-        self.pool = getattr(pooling_layers, pooling_func)(
-            in_dim=self.stats_dim * block.expansion
-        )
+        self.pool = getattr(pooling_layers,
+                            pooling_func)(in_dim=self.stats_dim *
+                                          block.expansion)
         self.pool_out_dim = self.pool.get_out_dim()
         self.seg_1 = nn.Linear(self.pool_out_dim, embed_dim)
         if self.two_emb_layer:
@@ -180,29 +189,29 @@ class Res2Net(nn.Module):
             return embed_a
 
 
-def Res2Net34_Base(feat_dim, embed_dim, pooling_func="TSTP", two_emb_layer=False):
-    return Res2Net(
-        32,
-        [3, 4, 6, 3],
-        feat_dim=feat_dim,
-        embed_dim=embed_dim,
-        pooling_func=pooling_func,
-        two_emb_layer=two_emb_layer,
-    )
+def Res2Net34_Base(feat_dim,
+                   embed_dim,
+                   pooling_func='TSTP',
+                   two_emb_layer=False):
+    return Res2Net(32, [3, 4, 6, 3],
+                   feat_dim=feat_dim,
+                   embed_dim=embed_dim,
+                   pooling_func=pooling_func,
+                   two_emb_layer=two_emb_layer)
 
 
-def Res2Net34_Large(feat_dim, embed_dim, pooling_func="TSTP", two_emb_layer=False):
-    return Res2Net(
-        64,
-        [3, 4, 6, 3],
-        feat_dim=feat_dim,
-        embed_dim=embed_dim,
-        pooling_func=pooling_func,
-        two_emb_layer=two_emb_layer,
-    )
+def Res2Net34_Large(feat_dim,
+                    embed_dim,
+                    pooling_func='TSTP',
+                    two_emb_layer=False):
+    return Res2Net(64, [3, 4, 6, 3],
+                   feat_dim=feat_dim,
+                   embed_dim=embed_dim,
+                   pooling_func=pooling_func,
+                   two_emb_layer=two_emb_layer)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     x = torch.zeros(1, 200, 80)
     model = Res2Net34_Base(feat_dim=80, embed_dim=256, two_emb_layer=False)
     model.eval()

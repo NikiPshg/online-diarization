@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import wespeaker.models.campplus as campplus
-import wespeaker.models.ecapa_tdnn as ecapa_tdnn
-import wespeaker.models.eres2net as eres2net
-import wespeaker.models.gemini_dfresnet as gemini
-import wespeaker.models.redimnet as redimnet
-import wespeaker.models.repvgg as repvgg
-import wespeaker.models.res2net as res2net
-import wespeaker.models.resnet as resnet
-import wespeaker.models.samresnet as samresnet
-import wespeaker.models.tdnn as tdnn
-import wespeaker.models.whisper_PMFA as whisper_PMFA
+import streaming_nemo.lib.wespeaker.models.tdnn as tdnn
+import streaming_nemo.lib.wespeaker.models.ecapa_tdnn as ecapa_tdnn
+import streaming_nemo.lib.wespeaker.models.resnet as resnet
+import streaming_nemo.lib.wespeaker.models.repvgg as repvgg
+import streaming_nemo.lib.wespeaker.models.campplus as campplus
+import streaming_nemo.lib.wespeaker.models.eres2net as eres2net
+import streaming_nemo.lib.wespeaker.models.gemini_dfresnet as gemini
+import streaming_nemo.lib.wespeaker.models.res2net as res2net
+import streaming_nemo.lib.wespeaker.models.whisper_PMFA as whisper_PMFA
+import streaming_nemo.lib.wespeaker.models.redimnet as redimnet
+import streaming_nemo.lib.wespeaker.models.samresnet as samresnet
+
 
 
 def get_speaker_model(model_name: str):

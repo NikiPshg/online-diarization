@@ -15,13 +15,15 @@
 
 import torch
 import torch.nn as nn
-import wespeaker.models.pooling_layers as pooling_layers
+import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
 
 
 class SimAMBasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, ConvLayer, NormLayer, in_planes, planes, stride=1, block_id=1):
+    def __init__(
+        self, ConvLayer, NormLayer, in_planes, planes, stride=1, block_id=1
+    ):
         super(SimAMBasicBlock, self).__init__()
         self.conv1 = ConvLayer(
             in_planes,
@@ -69,7 +71,9 @@ class SimAMBasicBlock(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, in_planes, block, num_blocks, in_ch=1, **kwargs):
+    def __init__(
+        self, in_planes, block, num_blocks, in_ch=1, **kwargs
+    ):
         super(ResNet, self).__init__()
         self.in_planes = in_planes
         self.NormLayer = nn.BatchNorm2d
@@ -163,7 +167,7 @@ class SimAM_ResNet100_ASP(nn.Module):
         return x
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     x = torch.zeros(1, 200, 80)
     model = SimAM_ResNet34_ASP(embed_dim=256)
     model.eval()

@@ -22,17 +22,32 @@ import yaml
 
 
 def get_logger(outdir, fname):
-    formatter = logging.Formatter("[ %(levelname)s : %(asctime)s ] - %(message)s")
-    logging.basicConfig(
-        level=logging.DEBUG, format="[ %(levelname)s : %(asctime)s ] - %(message)s"
-    )
-    logger = logging.getLogger("Pyobj, f")
-    # Dump log to file
-    fh = logging.FileHandler(os.path.join(outdir, fname))
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-    return logger
+    
+    formatter = logging.Formatter(
+        "[ %(levelname)s : %(asctime)s ] - %(message)s")
+    
 
+    logger = logging.getLogger("Pyobj, f")
+    logger.setLevel(logging.DEBUG) 
+    
+    os.makedirs(outdir, exist_ok=True)  
+    fh = logging.FileHandler(os.path.join(outdir, fname))
+    fh.setLevel(logging.DEBUG)  
+    fh.setFormatter(formatter)
+    
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO) 
+    ch.setFormatter(formatter)
+    
+    logging.basicConfig(handlers=[])
+    
+    if logger.hasHandlers():
+        logger.handlers.clear()
+    
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    
+    return logger
 
 def parse_config_or_kwargs(config_file, **kwargs):
     """parse_config_or_kwargs
@@ -52,12 +67,12 @@ def parse_config_or_kwargs(config_file, **kwargs):
 
 
 def validate_path(dir_name):
-    """Create the directory if it doesn't exist
+    """ Create the directory if it doesn't exist
     :param dir_name
     :return: None
     """
     dir_name = os.path.dirname(dir_name)  # get the path
-    if not os.path.exists(dir_name) and (dir_name != ""):
+    if not os.path.exists(dir_name) and (dir_name != ''):
         os.makedirs(dir_name)
 
 

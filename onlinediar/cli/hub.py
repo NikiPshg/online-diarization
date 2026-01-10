@@ -15,13 +15,13 @@
 # limitations under the License.
 
 import os
+import requests
 import sys
+from pathlib import Path
 import tarfile
 import zipfile
-from pathlib import Path
 from urllib.request import urlretrieve
 
-import requests
 import tqdm
 
 
@@ -48,7 +48,9 @@ def download(url: str, dest: str, only_child=True):
     with tqdm.tqdm(
         unit="B", unit_scale=True, unit_divisor=1024, miniters=1, desc=(name)
     ) as t:
-        urlretrieve(url, filename=file_path, reporthook=progress_hook(t), data=None)
+        urlretrieve(
+            url, filename=file_path, reporthook=progress_hook(t), data=None
+        )
         t.total = t.n
 
     if name.endswith((".tar.gz", ".tar")):
@@ -104,14 +106,18 @@ class Hub(object):
         model_dir = os.path.join(Path.home(), ".wespeaker", lang)
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
-        if set(["avg_model.pt", "config.yaml"]).issubset(set(os.listdir(model_dir))):
+        if set(["avg_model.pt", "config.yaml"]).issubset(
+            set(os.listdir(model_dir))
+        ):
             return model_dir
         else:
             response = requests.get(
                 "https://modelscope.cn/api/v1/datasets/wenet/wespeaker_pretrained_models/oss/tree"  # noqa
             )
             model_info = next(
-                data for data in response.json()["Data"] if data["Key"] == model
+                data
+                for data in response.json()["Data"]
+                if data["Key"] == model
             )
             model_url = model_info["Url"]
             download(model_url, model_dir)

@@ -1,5 +1,5 @@
 import torch
-
+from typing import Tuple
 from .base import RecognizerMemory
 
 
@@ -65,35 +65,43 @@ class OnlineClusteringMemory(RecognizerMemory):
         assert len(classes) == scores.numel()
         return scores
 
-    def processing_one_emb(
-        self, emb: torch.Tensor, is_short: bool = False, is_silence: bool = False
-    ) -> str:
+    def processing_emb(
+        self, emb: torch.Tensor,
+        is_short: bool = False,
+        is_silence: bool = False,
+        recognize: bool = False,
+        freeze: bool = False        
+    ) -> Tuple[int, float]: 
         if emb.dim() == 1:
             emb = emb.unsqueeze(0)
 
-        if not self.predictions:
+        similarity = 0.0
+        if not self.representations and emb is not None :
             class_id = self.add_class(emb)
-            self.predictions = [class_id]
+            self.predictions.append(class_id)
             self.last_speaker = class_id
-            return class_id
-
-        if is_short and not is_silence:
-            return self.last_speaker
+            return class_id, similarity
+        
+        if (is_short and not is_silence) or (emb is None):
+            return self.last_speaker, similarity
 
         scores = self.verify_all(emb).view(-1)
         idx_max = torch.argmax(scores).item()
-        s_max = scores[idx_max]
+        s_max = scores[idx_max].item()
         classes = list(self.representations.keys())
         class_id = classes[idx_max]
 
-        if s_max > self.threshold:
+        if ((s_max > self.threshold) or freeze) and not recognize:
             if s_max > self.threshold_update:
                 self.update_class(class_id, emb)
             self.last_speaker = class_id
-            self.predictions += [class_id]
+            self.predictions.append(class_id)
+        elif freeze and s_max < self.threshold:
+            return 'UNKNOWN_SPEAKER', s_max
         else:
             class_id = self.add_class(emb)
             self.last_speaker = class_id
-            self.predictions += [class_id]
+            self.predictions.append(class_id)
+        speaker_name =  f"SPEAKER_{str(int(class_id) - 1 ).zfill(2)}"
+        return speaker_name, s_max
 
-        return class_id
