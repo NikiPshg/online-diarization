@@ -6,6 +6,7 @@ A Python library for real-time and file-based speaker diarization supporting bot
 
 ```bash
 # Clone the repository
+# python 3.10.0
 git clone https://github.com/NikiPshg/online-diarization
 cd online-diarization
 export PYTHONPATH=./
