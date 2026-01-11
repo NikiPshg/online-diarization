@@ -21,13 +21,13 @@ import numpy as np
 import scipy.linalg as spl
 from numpy.linalg import inv
 from tqdm import tqdm
-from wespeaker.utils.plda.kaldi_utils import read_plda
+from onlinediar.utils.plda.kaldi_utils import read_plda
 
-from wespeaker.utils.plda.plda_utils import compute_normalizing_transform
-from wespeaker.utils.plda.plda_utils import get_data_for_plda
-from wespeaker.utils.plda.plda_utils import norm_embeddings
-from wespeaker.utils.plda.plda_utils import read_vec_scp_file
-from wespeaker.utils.plda.plda_utils import sort_svd
+from onlinediar.utils.plda.plda_utils import compute_normalizing_transform
+from onlinediar.utils.plda.plda_utils import get_data_for_plda
+from onlinediar.utils.plda.plda_utils import norm_embeddings
+from onlinediar.utils.plda.plda_utils import read_vec_scp_file
+from onlinediar.utils.plda.plda_utils import sort_svd
 
 M_LOG_2PI = 1.8378770664093454835606594728112
 

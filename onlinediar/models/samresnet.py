@@ -15,7 +15,7 @@
 
 import torch
 import torch.nn as nn
-import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
+import onlinediar.models.pooling_layers as pooling_layers
 
 
 class SimAMBasicBlock(nn.Module):

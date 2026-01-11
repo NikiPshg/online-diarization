@@ -30,7 +30,7 @@ import torch.nn as nn
 import numpy as np
 import torch
 import copy
-import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
+import onlinediar.models.pooling_layers as pooling_layers
 
 optional_groupwise_layers = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26]
 g2_map = dict.fromkeys(optional_groupwise_layers, 2)

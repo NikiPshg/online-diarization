@@ -27,8 +27,8 @@ import torch
 import math
 import torch.nn as nn
 import torch.nn.functional as F
-import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
-from streaming_nemo.lib.wespeaker.models.eres2net import ReLU, conv1x1, conv3x3
+import onlinediar.models.pooling_layers as pooling_layers
+from onlinediar.models.eres2net import ReLU, conv1x1, conv3x3
 
 
 class BasicBlockRes2Net(nn.Module):

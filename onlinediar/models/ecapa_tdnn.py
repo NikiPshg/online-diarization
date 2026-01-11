@@ -21,7 +21,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
+import onlinediar.models.pooling_layers as pooling_layers
 ''' Res2Conv1d + BatchNorm1d + ReLU
 '''
 

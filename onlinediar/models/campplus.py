@@ -32,7 +32,7 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import streaming_nemo.lib.wespeaker.models.pooling_layers as pooling_layers
+import onlinediar.models.pooling_layers as pooling_layers
 
 
 def get_nonlinear(config_str, channels):
