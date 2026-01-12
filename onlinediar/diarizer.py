@@ -141,7 +141,9 @@ class Diarizer:
         Returns:
             pyannote.core.Annotation object with diarization results
         """
-        return self.model.online_diarization(audio_path)
+        annote = self.model.online_diarization(audio_path)
+        self.reset()
+        return annote
 
     def register_speaker(self, audio_path: str, speaker_name: str):
         """
@@ -281,7 +283,7 @@ class Diarizer:
                 self.logger.info(f"Audio saved: {audio_path}")
                 
                 self.logger.info("Running full diarization on recorded audio")
-                self.model.reset()
+                self.reset()
                 annotation = self.diarize(audio_path)
                 
                 rttm_path = f"{output_prefix}.rttm"

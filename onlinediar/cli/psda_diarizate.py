@@ -129,7 +129,6 @@ class PsdaSpeakerDiarization(BaseSpeakerDiarization):
                     self.logger.debug(f"Diarizaton segment: {date_dict}")
         except Exception as e:
             self.logger.error(f"Error in diarization: {e}")
-            self.reset()
 
     def processing_embedding(
         self,
