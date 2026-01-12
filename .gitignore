@@ -6,9 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
-#
+# models
 *.onnx
 models/
+
+#data with audio
+data/
 #
 *greedy_search_2.py
 *.json

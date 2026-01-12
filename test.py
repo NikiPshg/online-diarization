@@ -9,7 +9,7 @@ diarizer = Diarizer(
 )
 
 # Diarize audio file
-annotation = diarizer.diarize("data/poemi_01_pushkin_0063.wav")
+annotation = diarizer.diarize("data/ru-mss.wav")
 
 # Save results
 diarizer.save_rttm(annotation, "output.rttm")
