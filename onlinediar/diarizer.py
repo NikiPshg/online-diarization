@@ -8,7 +8,12 @@ import logging
 import threading
 from typing import Optional, List, Dict, Tuple
 from pyannote.core import Annotation
-import sounddevice as sd
+try:
+    import sounddevice as sd
+    _SOUNDDEVICE_AVAILABLE = True
+except (ImportError, OSError):
+    _SOUNDDEVICE_AVAILABLE = False
+    sd = None
 import numpy as np
 import torch
 from queue import Queue
@@ -193,6 +198,11 @@ class Diarizer:
             show_realtime_results: Display real-time results
             block_size: Audio block size for streaming buffer
         """
+        if not _SOUNDDEVICE_AVAILABLE:
+            raise ImportError(
+                "sounddevice is not available. PortAudio library is required for microphone streaming. "
+                "Install it with: sudo apt-get install portaudio19-dev libportaudio2"
+            )
         resample_rate = self.model.resample_rate
         
         audio_queue = Queue()
