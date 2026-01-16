@@ -21,3 +21,5 @@ umap-learn
 pyannote-audio
 joblib
 pydantic
+openpyxl
+onnxruntime-gpu

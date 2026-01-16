@@ -180,8 +180,7 @@ class CseaSpeakerDiarization(BaseSpeakerDiarization):
                     self.logger.debug(f"Diarizaton segment: {date_dict}")
         except Exception as e:
             self.logger.error(f"Error in diarization: {e}")
-            self.reset()
-
+            
     def recognize(self, audio_path: str, speaker_name: str):
         """Register a known speaker from an audio file."""
         emb = self.extract_embedding_from_pcm(audio_path)
