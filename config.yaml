@@ -1,0 +1,35 @@
+# Configuration file for diarization runs
+# Each run_name has its own configuration section
+
+psda:
+  online_psda_threshold: -73
+  min_silence_dur_ms: 100
+  min_duration_for_change: 1000
+  max_embeddings_per_speaker: 40
+  resample_rate: 16000
+  device: "cuda"
+  use_pca: false
+
+psda+pca:
+  online_psda_threshold: -73
+  min_silence_dur_ms: 100
+  min_duration_for_change: 1000
+  max_embeddings_per_speaker: 40
+  resample_rate: 16000
+  device: "cuda"
+  use_pca: true
+
+csea:
+  csea_threshold: 0.58
+  max_embeddings_per_speaker: 40
+  resample_rate: 16000
+  device: "cuda"
+  use_pca: false
+
+csea+pca:
+  csea_threshold: 0.58
+  max_embeddings_per_speaker: 40
+  resample_rate: 16000
+  device: "cuda"
+  use_pca: true
+
